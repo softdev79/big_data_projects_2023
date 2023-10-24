@@ -1,0 +1,12 @@
+val num = Array(1,2,3,4,5)
+val data1 = sc.parallelize(num,3)
+data1.foreach(println)
+val data2 = sc.parallelize(num)
+
+val courseRdd = sc.parallelize(seq(("text2","Hello"),("text1","World")))
+
+courseRdd.foreach(println)
+val sorted = courseRdd.sortByKey()
+sorted.foreach(println)
+val sortedresult = sorted.collect()
+sortedresult.foreach(println)

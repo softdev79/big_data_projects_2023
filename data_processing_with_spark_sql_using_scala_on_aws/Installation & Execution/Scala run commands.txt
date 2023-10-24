@@ -1,0 +1,136 @@
+spark.version
+
+/* Accessing parameters */
+
+val param = ("par 1","par 2","par3")
+println(param._1)
+println(param._2)
+println(param._3)
+
+
+/* Accessing loops */
+
+val a1 = Array(65,66,67,68,69,70)
+a1.foreach(e => println(e))
+for (x <- 1 to 5) println(x)
+
+/* Understanding Tuples */
+
+object tupleDemo {
+val mytuple = (1,2,"hello",true);
+val mytuple2 = new Tuple3(1,2,"hello");
+val mytuple3 = new Tuple3(1,"hello",(2,3));
+
+def main(args: Array[String]){
+println(mytuple._1);
+println(mytuple._2);
+println(mytuple._3);
+println(mytuple._4);
+mytuple2.productIterator.foreach{
+i => println(i);
+}
+println(mytuple3._3);
+println(mytuple3._3._2);
+}
+}
+
+tupleDemo.main(Array(" "))
+
+/* Higher order Functions in scala */
+
+object Demo {
+
+def math1(x: Double, y:Double,z: Double, f:(Double,Double)=> Double): Double = f(f(x,y),z);
+
+def main(args: Array[String]){
+val result = math(50,20,10,(x,y)=> x + y);
+val result01 = math(50,20,10,_+_);
+println(result);
+}
+}
+
+
+
+/* Transformations - MAP */
+val empmap = Map("alex" -> 101,"bob" -> 102, "Roshan" -> 103)
+empmap("bob")
+empmap("alex")
+
+/* To display all contents using FOR constructs */
+for ((k,v) <- empmap) println(s"key: $k,value: $v")
+
+/* Transformations - FLAT MAP */
+ 
+object flatob { 
+    def main(args:Array[String])
+    {
+       val values = Seq("Geeks", "for", "Geeks")
+        val result = values.flatMap(_.toUpperCase)
+        println(result)
+    }
+}
+flatob.main(Array(" "))
+
+
+/* Transformations - FILTER */
+object demofilter { 
+    def main(args:Array[String])
+    {
+        val map1 = Map("abc" -> 101,"xyz" -> 201)
+        val result = map1.filter(x => x._1 == "abc")
+        println(result)
+    }
+}
+demofilter.main(Array(" "))
+
+
+/* RDD - paralleize */
+
+val list =(1 to 200 by 2).toList
+val firstrdd = sc.parallelize(list)
+val secondrdd = firstrdd.map (x=> (x,2*x,x*x)) 
+secondrdd.take(10)
+val thirdrdd = secondrdd.map (x=> (x._1, x._2, x._3,1)) 
+val finalval = thirdrdd.map(x=> (x*x+2*x+1)).reduce(_+_)
+
+/* Wordcount program - file read from spark-shell */
+
+val lines = sc.textFile("sample.txt")
+val words = lines.flatMap(line => line.split(" "))
+val wordmap = words.map(word => (word,1))
+val wordcount = wordmap.reduceByKey((x,y) => (x + y))
+
+wordcount.foreach(println)
+
+/* To get Total number of lines */
+println(lines.count())
+
+/* To get number of characters in each line */
+val linelength = lines.map(s => s.length)
+linelength.foreach(println)
+
+/* Total characters present in a file */
+val totallength = linelength.reduce((a,b) => (a+b))
+totallength.foreach(println)
+
+/* Finding Top 10 movies using RDD refer enclosed script*/
+/* Finding Top 10 movies using SPARK SQL refer enclosed script*/
+/* TOP 3 Users based on the numer of review given refer enclose script */
+
+/* To execute Sample scala program from spark shell */
+
+:load Hello.scala
+Hello.main(Array(" "))
+
+:load Top3reviewer.scala
+
+/* accessing HIVE tables */
+/* refer students.hql */
+show tables;
+show databases;
+
+/* In Spark-Shell to read HIVE table */
+
+val hive_df = spark.sql("select * from default.customer_details")
+hive_df.show
+
